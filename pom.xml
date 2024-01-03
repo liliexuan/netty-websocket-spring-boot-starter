@@ -23,21 +23,22 @@
 
     <developers>
         <developer>
-            <name>Yeauty</name>
-            <email>YeautyYE@gmail.com</email>
+            <name>Min</name>
+            <email>liliexuan@gmail.com</email>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/YeautyYE/netty-websocket-spring-boot-starter.git</connection>
-        <developerConnection>scm:git:ssh://github.com/YeautyYE/netty-websocket-spring-boot-starter.git
+        <connection>scm:git:git://github.com/liliexuan/netty-websocket-spring-boot-starter.git</connection>
+        <developerConnection>scm:git:ssh://github.com/liliexuan/netty-websocket-spring-boot-starter.git
         </developerConnection>
-        <url>https://github.com/YeautyYE/netty-websocket-spring-boot-starter</url>
+        <url>https://github.com/liliexuan/netty-websocket-spring-boot-starter</url>
     </scm>
 
     <properties>
-        <netty.version>4.1.67.Final</netty.version>
-        <spring-boot.version>2.0.0.RELEASE</spring-boot.version>
+        <netty.version>4.1.104.Final</netty.version>
+        <spring-boot.version>2.7.18</spring-boot.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
