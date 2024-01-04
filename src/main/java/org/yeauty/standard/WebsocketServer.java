@@ -37,7 +37,7 @@ public class WebsocketServer {
     private final ServerEndpointConfig config;
 
 
-    private static final InternalLogger logger = InternalLoggerFactory.getInstance(WebsocketServer.class);
+    private static final InternalLogger LOGGER = InternalLoggerFactory.getInstance(WebsocketServer.class);
 
     public WebsocketServer(PojoEndpointServer webSocketServerHandler, ServerEndpointConfig serverEndpointConfig) {
         this.pojoEndpointServer = webSocketServerHandler;
@@ -100,7 +100,7 @@ public class WebsocketServer {
         }
 
         ChannelFuture channelFuture;
-        if ("0.0.0.0".equals(config.getHost())) {
+        if (ServerEndpointConfig.LOCAL_HOST.equals(config.getHost())) {
             channelFuture = bootstrap.bind(config.getPort());
         } else {
             try {

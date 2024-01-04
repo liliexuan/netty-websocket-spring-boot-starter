@@ -11,7 +11,7 @@ import static org.yeauty.pojo.PojoEndpointServer.URI_TEMPLATE;
 
 public class AntPathMatcherWrapper extends AntPathMatcher implements WsPathMatcher {
 
-    private String pattern;
+    private final String pattern;
 
     public AntPathMatcherWrapper(String pattern) {
         this.pattern = pattern;

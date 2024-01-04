@@ -83,15 +83,13 @@ public class ServerEndpointExporter extends ApplicationObjectSupport implements 
         String[] basePackages = null;
 
         String[] enableWebSocketBeanNames = context.getBeanNamesForAnnotation(EnableWebSocket.class);
-        if (enableWebSocketBeanNames.length != 0) {
-            for (String enableWebSocketBeanName : enableWebSocketBeanNames) {
-                Object enableWebSocketBean = context.getBean(enableWebSocketBeanName);
-                EnableWebSocket enableWebSocket = AnnotationUtils.findAnnotation(enableWebSocketBean.getClass(), EnableWebSocket.class);
-                assert enableWebSocket != null;
-                if (enableWebSocket.scanBasePackages().length != 0) {
-                    basePackages = enableWebSocket.scanBasePackages();
-                    break;
-                }
+        for (String enableWebSocketBeanName : enableWebSocketBeanNames) {
+            Object enableWebSocketBean = context.getBean(enableWebSocketBeanName);
+            EnableWebSocket enableWebSocket = AnnotationUtils.findAnnotation(enableWebSocketBean.getClass(), EnableWebSocket.class);
+            assert enableWebSocket != null;
+            if (enableWebSocket.scanBasePackages().length != 0) {
+                basePackages = enableWebSocket.scanBasePackages();
+                break;
             }
         }
 
@@ -133,7 +131,6 @@ public class ServerEndpointExporter extends ApplicationObjectSupport implements 
                 logger.error(String.format("websocket [%s] init fail", entry.getKey()), e);
             } catch (SSLException e) {
                 logger.error(String.format("websocket [%s] ssl create fail", entry.getKey()), e);
-
             }
         }
     }
@@ -146,7 +143,7 @@ public class ServerEndpointExporter extends ApplicationObjectSupport implements 
         ServerEndpointConfig serverEndpointConfig = buildConfig(annotation);
 
         ApplicationContext context = getApplicationContext();
-        PojoMethodMapping pojoMethodMapping = null;
+        PojoMethodMapping pojoMethodMapping;
         try {
             pojoMethodMapping = new PojoMethodMapping(endpointClass, context, beanFactory);
         } catch (DeploymentException e) {
@@ -212,7 +209,7 @@ public class ServerEndpointExporter extends ApplicationObjectSupport implements 
         }
         Boolean corsAllowCredentials = resolveAnnotationValue(annotation.corsAllowCredentials(), Boolean.class, "corsAllowCredentials");
 
-        ServerEndpointConfig serverEndpointConfig = new ServerEndpointConfig(host, port, bossLoopGroupThreads, workerLoopGroupThreads
+        return new ServerEndpointConfig(host, port, bossLoopGroupThreads, workerLoopGroupThreads
                 , useCompressionHandler, optionConnectTimeoutMillis, optionSoBacklog, childOptionWriteSpinCount, childOptionWriteBufferHighWaterMark
                 , childOptionWriteBufferLowWaterMark, childOptionSoRcvbuf, childOptionSoSndbuf, childOptionTcpNodelay, childOptionSoKeepalive
                 , childOptionSoLinger, childOptionAllowHalfClosure, readerIdleTimeSeconds, writerIdleTimeSeconds, allIdleTimeSeconds
@@ -220,8 +217,6 @@ public class ServerEndpointExporter extends ApplicationObjectSupport implements 
                 , sslKeyPassword, sslKeyStore, sslKeyStorePassword, sslKeyStoreType
                 , sslTrustStore, sslTrustStorePassword, sslTrustStoreType
                 , corsOrigins, corsAllowCredentials);
-
-        return serverEndpointConfig;
     }
 
     private <T> T resolveAnnotationValue(Object value, Class<T> requiredType, String paramName) {

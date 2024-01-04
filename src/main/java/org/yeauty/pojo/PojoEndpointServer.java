@@ -36,9 +36,9 @@ public class PojoEndpointServer {
 
     private final ServerEndpointConfig config;
 
-    private Set<WsPathMatcher> pathMatchers = new HashSet<>();
+    private final Set<WsPathMatcher> pathMatchers = new HashSet<>();
 
-    private static final InternalLogger logger = InternalLoggerFactory.getInstance(PojoEndpointServer.class);
+    private static final InternalLogger LOGGER = InternalLoggerFactory.getInstance(PojoEndpointServer.class);
 
     public PojoEndpointServer(PojoMethodMapping methodMapping, ServerEndpointConfig config, String path) {
         addPathPojoMethodMapping(path, methodMapping);
@@ -47,18 +47,18 @@ public class PojoEndpointServer {
 
     public boolean hasBeforeHandshake(Channel channel, String path) {
         PojoMethodMapping methodMapping = getPojoMethodMapping(path, channel);
-        return methodMapping.getBeforeHandshake()!=null;
+        return methodMapping.getBeforeHandshake() != null;
     }
 
     public void doBeforeHandshake(Channel channel, FullHttpRequest req, String path) {
-        PojoMethodMapping methodMapping = null;
+        PojoMethodMapping methodMapping;
         methodMapping = getPojoMethodMapping(path, channel);
 
-        Object implement = null;
+        Object implement;
         try {
             implement = methodMapping.getEndpointInstance();
         } catch (Exception e) {
-            logger.error(e);
+            LOGGER.error(e);
             return;
         }
         channel.attr(POJO_KEY).set(implement);
@@ -71,7 +71,7 @@ public class PojoEndpointServer {
             } catch (TypeMismatchException e) {
                 throw e;
             } catch (Throwable t) {
-                logger.error(t);
+                LOGGER.error(t);
             }
         }
     }
@@ -80,12 +80,12 @@ public class PojoEndpointServer {
         PojoMethodMapping methodMapping = getPojoMethodMapping(path, channel);
 
         Object implement = channel.attr(POJO_KEY).get();
-        if (implement==null){
+        if (implement == null) {
             try {
                 implement = methodMapping.getEndpointInstance();
                 channel.attr(POJO_KEY).set(implement);
             } catch (Exception e) {
-                logger.error(e);
+                LOGGER.error(e);
                 return;
             }
             Session session = new Session(channel);
@@ -99,14 +99,14 @@ public class PojoEndpointServer {
             } catch (TypeMismatchException e) {
                 throw e;
             } catch (Throwable t) {
-                logger.error(t);
+                LOGGER.error(t);
             }
         }
     }
 
     public void doOnClose(Channel channel) {
         Attribute<String> attrPath = channel.attr(PATH_KEY);
-        PojoMethodMapping methodMapping = null;
+        PojoMethodMapping methodMapping;
         if (pathMethodMappingMap.size() == 1) {
             methodMapping = pathMethodMappingMap.values().iterator().next();
         } else {
@@ -122,22 +122,20 @@ public class PojoEndpointServer {
             }
             Object implement = channel.attr(POJO_KEY).get();
             try {
-                methodMapping.getOnClose().invoke(implement,
-                        methodMapping.getOnCloseArgs(channel));
+                methodMapping.getOnClose().invoke(implement, methodMapping.getOnCloseArgs(channel));
             } catch (Throwable t) {
-                logger.error(t);
+                LOGGER.error(t);
             }
         }
     }
 
 
     public void doOnError(Channel channel, Throwable throwable) {
-        Attribute<String> attrPath = channel.attr(PATH_KEY);
-        PojoMethodMapping methodMapping = null;
+        PojoMethodMapping methodMapping;
         if (pathMethodMappingMap.size() == 1) {
             methodMapping = pathMethodMappingMap.values().iterator().next();
         } else {
-            String path = attrPath.get();
+            String path = channel.attr(PATH_KEY).get();
             methodMapping = pathMethodMappingMap.get(path);
         }
         if (methodMapping.getOnError() != null) {
@@ -150,18 +148,17 @@ public class PojoEndpointServer {
                 Object[] args = methodMapping.getOnErrorArgs(channel, throwable);
                 method.invoke(implement, args);
             } catch (Throwable t) {
-                logger.error(t);
+                LOGGER.error(t);
             }
         }
     }
 
     public void doOnMessage(Channel channel, WebSocketFrame frame) {
-        Attribute<String> attrPath = channel.attr(PATH_KEY);
-        PojoMethodMapping methodMapping = null;
+        PojoMethodMapping methodMapping;
         if (pathMethodMappingMap.size() == 1) {
             methodMapping = pathMethodMappingMap.values().iterator().next();
         } else {
-            String path = attrPath.get();
+            String path = channel.attr(PATH_KEY).get();
             methodMapping = pathMethodMappingMap.get(path);
         }
         if (methodMapping.getOnMessage() != null) {
@@ -170,18 +167,17 @@ public class PojoEndpointServer {
             try {
                 methodMapping.getOnMessage().invoke(implement, methodMapping.getOnMessageArgs(channel, textFrame));
             } catch (Throwable t) {
-                logger.error(t);
+                LOGGER.error(t);
             }
         }
     }
 
     public void doOnBinary(Channel channel, WebSocketFrame frame) {
-        Attribute<String> attrPath = channel.attr(PATH_KEY);
-        PojoMethodMapping methodMapping = null;
+        PojoMethodMapping methodMapping;
         if (pathMethodMappingMap.size() == 1) {
             methodMapping = pathMethodMappingMap.values().iterator().next();
         } else {
-            String path = attrPath.get();
+            String path = channel.attr(PATH_KEY).get();
             methodMapping = pathMethodMappingMap.get(path);
         }
         if (methodMapping.getOnBinary() != null) {
@@ -190,18 +186,17 @@ public class PojoEndpointServer {
             try {
                 methodMapping.getOnBinary().invoke(implement, methodMapping.getOnBinaryArgs(channel, binaryWebSocketFrame));
             } catch (Throwable t) {
-                logger.error(t);
+                LOGGER.error(t);
             }
         }
     }
 
     public void doOnEvent(Channel channel, Object evt) {
-        Attribute<String> attrPath = channel.attr(PATH_KEY);
-        PojoMethodMapping methodMapping = null;
+        PojoMethodMapping methodMapping;
         if (pathMethodMappingMap.size() == 1) {
             methodMapping = pathMethodMappingMap.values().iterator().next();
         } else {
-            String path = attrPath.get();
+            String path = channel.attr(PATH_KEY).get();
             methodMapping = pathMethodMappingMap.get(path);
         }
         if (methodMapping.getOnEvent() != null) {
@@ -212,7 +207,7 @@ public class PojoEndpointServer {
             try {
                 methodMapping.getOnEvent().invoke(implement, methodMapping.getOnEventArgs(channel, evt));
             } catch (Throwable t) {
-                logger.error(t);
+                LOGGER.error(t);
             }
         }
     }

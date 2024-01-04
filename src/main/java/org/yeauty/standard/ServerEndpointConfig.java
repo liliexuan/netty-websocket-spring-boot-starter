@@ -12,6 +12,8 @@ import java.net.Socket;
  */
 public class ServerEndpointConfig {
 
+    public static final String LOCAL_HOST = "0.0.0.0";
+
     private final String HOST;
     private final int PORT;
     private final int BOSS_LOOP_GROUP_THREADS;
@@ -49,8 +51,8 @@ public class ServerEndpointConfig {
     private static Integer randomPort;
 
     public ServerEndpointConfig(String host, int port, int bossLoopGroupThreads, int workerLoopGroupThreads, boolean useCompressionHandler, int connectTimeoutMillis, int soBacklog, int writeSpinCount, int writeBufferHighWaterMark, int writeBufferLowWaterMark, int soRcvbuf, int soSndbuf, boolean tcpNodelay, boolean soKeepalive, int soLinger, boolean allowHalfClosure, int readerIdleTimeSeconds, int writerIdleTimeSeconds, int allIdleTimeSeconds, int maxFramePayloadLength, boolean useEventExecutorGroup, int eventExecutorGroupThreads, String keyPassword, String keyStore, String keyStorePassword, String keyStoreType, String trustStore, String trustStorePassword, String trustStoreType, String[] corsOrigins, Boolean corsAllowCredentials) {
-        if (StringUtils.isEmpty(host) || "0.0.0.0".equals(host) || "0.0.0.0/0.0.0.0".equals(host)) {
-            this.HOST = "0.0.0.0";
+        if (StringUtils.isEmpty(host) || LOCAL_HOST.equals(host) || (LOCAL_HOST + "/" + LOCAL_HOST).equals(host)) {
+            this.HOST = LOCAL_HOST;
         } else {
             this.HOST = host;
         }
