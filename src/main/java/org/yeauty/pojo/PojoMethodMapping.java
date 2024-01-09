@@ -246,7 +246,6 @@ public class PojoMethodMapping {
     }
 
     Object getEndpointInstance() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-
         Object implement = applicationContext.getBean(pojoClazz);
         if (Objects.isNull(implement)) {
             implement = pojoClazz.getDeclaredConstructor().newInstance();
