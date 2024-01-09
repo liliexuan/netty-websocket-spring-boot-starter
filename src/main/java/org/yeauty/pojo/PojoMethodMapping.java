@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class PojoMethodMapping {
 
@@ -245,6 +246,10 @@ public class PojoMethodMapping {
     }
 
     Object getEndpointInstance() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Object endpointBean = applicationContext.getBean(pojoClazz);
+        if (Objects.nonNull(endpointBean)) {
+            return endpointBean;
+        }
         Object implement = pojoClazz.getDeclaredConstructor().newInstance();
         AutowiredAnnotationBeanPostProcessor postProcessor = applicationContext.getBean(AutowiredAnnotationBeanPostProcessor.class);
         postProcessor.postProcessProperties(null, implement, null);
