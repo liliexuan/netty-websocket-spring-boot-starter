@@ -246,11 +246,11 @@ public class PojoMethodMapping {
     }
 
     Object getEndpointInstance() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        Object endpointBean = applicationContext.getBean(pojoClazz);
-        if (Objects.nonNull(endpointBean)) {
-            return endpointBean;
+
+        Object implement = applicationContext.getBean(pojoClazz);
+        if (Objects.isNull(implement)) {
+            implement = pojoClazz.getDeclaredConstructor().newInstance();
         }
-        Object implement = pojoClazz.getDeclaredConstructor().newInstance();
         AutowiredAnnotationBeanPostProcessor postProcessor = applicationContext.getBean(AutowiredAnnotationBeanPostProcessor.class);
         postProcessor.postProcessProperties(null, implement, null);
         return implement;
