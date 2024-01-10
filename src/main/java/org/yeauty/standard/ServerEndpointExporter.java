@@ -151,7 +151,7 @@ public class ServerEndpointExporter extends ApplicationObjectSupport implements 
         }
 
         InetSocketAddress inetSocketAddress = new InetSocketAddress(serverEndpointConfig.getHost(), serverEndpointConfig.getPort());
-        String path = resolveAnnotationValue(annotation.path(), String.class, "path");
+        String path = resolveAnnotationValue(annotation.value(), String.class, "path");
 
         WebsocketServer websocketServer = addressWebsocketServerMap.get(inetSocketAddress);
         if (websocketServer == null) {
@@ -166,7 +166,7 @@ public class ServerEndpointExporter extends ApplicationObjectSupport implements 
     private ServerEndpointConfig buildConfig(ServerEndpoint annotation) {
         String host = resolveAnnotationValue(annotation.host(), String.class, "host");
         int port = resolveAnnotationValue(annotation.port(), Integer.class, "port");
-        String path = resolveAnnotationValue(annotation.path(), String.class, "path");
+        String path = resolveAnnotationValue(annotation.value(), String.class, "value");
         int bossLoopGroupThreads = resolveAnnotationValue(annotation.bossLoopGroupThreads(), Integer.class, "bossLoopGroupThreads");
         int workerLoopGroupThreads = resolveAnnotationValue(annotation.workerLoopGroupThreads(), Integer.class, "workerLoopGroupThreads");
         boolean useCompressionHandler = resolveAnnotationValue(annotation.useCompressionHandler(), Boolean.class, "useCompressionHandler");
